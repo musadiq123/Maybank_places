@@ -24,17 +24,8 @@ const center = {
 
 function App() {
   const [options, setOptions] = useState(DEFAULT_OPTIONS)
-  // const { isLoaded } = useJsApiLoader({
-  //   googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-  //   libraries: ['places'],
-  // })
-  // const originRef = useRef()
-
-
   const [map, setMap] = useState(/** @type google.maps.Map */(null))
   const [directionsResponse, setDirectionsResponse] = useState(null)
-  const [distance, setDistance] = useState('')
-  const [duration, setDuration] = useState('')
   const [address, setAddress] = useState(null)
   const defaultProps = {
     center: {
@@ -48,15 +39,12 @@ function App() {
   }, [])
 
   const handleApiLoaded = (map, maps) => {
-    // use map and maps objects
     console.log("map:", map)
     console.log("maps:", maps)
 
   };
 
   useEffect(() => {
-    console.log("working")
-
     var config = {
       method: 'get',
       url: `http://maps.googleapis.com/maps/api/place/autocomplete/json?input=${address}&types=geocode&key=AIzaSyB2MHgsfNv6Gb1Cox4FJgWexogaYv62Wg0`,
@@ -73,14 +61,12 @@ function App() {
   }, [address])
 
   const handleAddressChange = (address) => {
-    // this.setState({ address });
     console.log("handle", address)
     setAddress(address)
     console.log(address)
   }
 
   const handleSelect = (address) => {
-    console.log("onselect:", address)
     setAddress(address)
     geocodeByAddress(address)
       .then(results => { getLatLng(results[0]) })
