@@ -111,7 +111,7 @@ function App() {
       </PlacesAutocomplete>
       <div style={{ margin: 30, height: 400 }}>
         <GoogleMapReact
-          bootstrapURLKeys={{ key: "AIzaSyB2MHgsfNv6Gb1Cox4FJgWexogaYv62Wg0" }}
+          bootstrapURLKeys={{ key: "API key" }}
           defaultCenter={defaultProps.center}
           defaultZoom={defaultProps.zoom}
           // style={{ width: 20, height: 200 }}
