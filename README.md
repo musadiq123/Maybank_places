@@ -1,4 +1,9 @@
-# Getting Started with Create React App
+# Getting Started with Google Map Places
+
+- Find Google Places using search Box
+- Using Ant design
+- Uses Google Map to show
+- Fetch data using Google API services 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
