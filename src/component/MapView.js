@@ -28,8 +28,8 @@ function MapView(defaultProps, API_KEY) {
         <div style={{ width: 800, height: 500, marginTop: 10, justifyContent: 'center', alignContent: 'center', alignSelf: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
             <GoogleMap
                 center={defaultProps.center}
-                zoom={15}
                 yesIWantToUseGoogleMapApiInternals
+                resetBoundsOnResize
                 mapContainerStyle={{ width: 800, height: 500 }}
                 options={{
                     zoomControl: false,

@@ -1,12 +1,13 @@
 import './App.css';
-import { AutoComplete, Col, Input, Row, Typography } from 'antd';
+import { AutoComplete, Col, Input, Row } from 'antd';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
-import MapView from './component/MapView';
 import { PageContainer } from '@ant-design/pro-components';
 import { connect } from 'react-redux';
 import { addPlaces, removePlaces } from './redux/places/actions';
+import GoogleMaps from './component/GoogleMaps';
+import Geocode from "react-geocode";
 
 
 let DEFAULT_OPTIONS = []
@@ -14,7 +15,15 @@ let DEFAULT_OPTIONS = []
 
 const App = ({ places, addPlaces, removePlaces }) => {
   const API_KEY = "AIzaSyAX5xXsDunAhn09Wac_LSRRiYOe6_h-hE8"
+  Geocode.setApiKey(API_KEY);
+  Geocode.setLanguage("en");
+  Geocode.setRegion("my");
+
+
   const [address, setAddress] = useState("")
+  const [selectedAddress, setSelectedAddress] = useState("")
+  const [markerData, setMarkerData] = useState("")
+
   const defaultProps = {
     center: {
       lat: 3.057818,
@@ -40,11 +49,13 @@ const App = ({ places, addPlaces, removePlaces }) => {
       .then(function (response) {
         if (response?.data?.predictions) {
           DEFAULT_OPTIONS = []
-          response?.data?.predictions.map((item) => {
-            DEFAULT_OPTIONS.push({
+          response?.data?.predictions.map((item, index) => {
+
+            return DEFAULT_OPTIONS.push({
+              key: index,
               label: item.description,
               value: item.description
-            })
+            });
 
           })
           // result.length > 0 && addPlaces(result)
@@ -59,8 +70,34 @@ const App = ({ places, addPlaces, removePlaces }) => {
     setAddress(address)
   }
 
+  const getgeocoding = (address) => {
+    Geocode.fromAddress(address).then(
+      (response) => {
+        const { lat, lng } = response.results[0].geometry.location;
+        const { place_id } = response.results[0];
+
+        console.log(lat, lng, place_id, response);
+        if ((lat && lng) || place_id) {
+          let data = {
+            lat: lat,
+            lng: lng,
+            place_id: place_id,
+            address: address
+          }
+          setMarkerData(data)
+        }
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
   const handleSelect = (select, data) => {
-    removePlaces()
+    setSelectedAddress(data)
+    console.log(data, selectedAddress)
+    getgeocoding(data && data?.value)
+    // removePlaces()
     addPlaces(data)
   }
 
@@ -81,14 +118,9 @@ const App = ({ places, addPlaces, removePlaces }) => {
               inputValue && option && option?.value?.toUpperCase().indexOf(inputValue?.toUpperCase()) !== -1
             }
           >
-            <Input.Search size="large" placeholder="Search here" enterButton />
+            <Input.Search size="large" placeholder="Search here" onClick={handleSelect} />
           </AutoComplete>
-
-          <MapView loading={false} defaultProps={defaultProps} API_KEY={API_KEY} />
-
-          {/* <div>
-            <Typography style={{ color: "blue" }}>{place && place.length > 0 && place[0].label}</Typography>
-          </div> */}
+          <GoogleMaps defaultProps={defaultProps} API_KEY={API_KEY} markerData={markerData} />
         </Col>
       </Row>
     </PageContainer>
